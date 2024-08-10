@@ -1732,7 +1732,7 @@ if [[ $IEEE80211AX -eq 1 ]]; then
 ieee80211ax=1
 he_bss_color=36
 he_oper_chwidth=1
-he_oper_centr_freq_seg0_idx=42
+he_oper_centr_freq_seg0_idx=$(($CHANNEL + 6))
 EOF
 fi
 
@@ -1740,7 +1740,7 @@ if [[ -n "$VHT_CAPAB" ]]; then
     cat << EOF >> $CONFDIR/hostapd.conf
 vht_capab=${VHT_CAPAB}
 vht_oper_chwidth=1
-vht_oper_centr_freq_seg0_idx=42
+vht_oper_centr_freq_seg0_idx=$(($CHANNEL + 6))
 EOF
 fi
 
