@@ -1692,6 +1692,7 @@ ctrl_interface_group=0
 ignore_broadcast_ssid=$HIDDEN
 ap_isolate=$ISOLATE_CLIENTS
 uapsd_advertisement_enabled=1
+auth_algs=3
 EOF
 
 if [[ -n "$COUNTRY" ]]; then
