@@ -1691,12 +1691,14 @@ ctrl_interface=$CONFDIR/hostapd_ctrl
 ctrl_interface_group=0
 ignore_broadcast_ssid=$HIDDEN
 ap_isolate=$ISOLATE_CLIENTS
+uapsd_advertisement_enabled=1
 EOF
 
 if [[ -n "$COUNTRY" ]]; then
     cat << EOF >> $CONFDIR/hostapd.conf
 country_code=${COUNTRY}
 ieee80211d=1
+ieee80211h=1
 EOF
 fi
 
@@ -1716,11 +1718,8 @@ fi
 if [[ $IEEE80211N -eq 1 ]]; then
     cat << EOF >> $CONFDIR/hostapd.conf
 ieee80211n=1
+ht_coex=0
 ht_capab=${HT_CAPAB}
-# Channel width (0 = 40 MHz. 1 = 80 Mhz)
-he_oper_chwidth=1
-# HE center channel (chan + 6)
-he_oper_centr_freq_seg0_idx=42
 EOF
 fi
 
@@ -1729,15 +1728,18 @@ if [[ $IEEE80211AC -eq 1 ]]; then
 fi
 
 if [[ $IEEE80211AX -eq 1 ]]; then
-    echo "ieee80211ax=1" >> $CONFDIR/hostapd.conf
+    cat << EOF >> $CONFDIR/hostapd.conf 
+ieee80211ax=1
+he_bss_color=36
+he_oper_chwidth=1
+he_oper_centr_freq_seg0_idx=42
+EOF
 fi
 
 if [[ -n "$VHT_CAPAB" ]]; then
     cat << EOF >> $CONFDIR/hostapd.conf
 vht_capab=${VHT_CAPAB}
-# Channel width (0 = 40 MHz. 1 = 80 Mhz)
 vht_oper_chwidth=1
-# VHT center channel (chan + 6)
 vht_oper_centr_freq_seg0_idx=42
 EOF
 fi
@@ -1763,19 +1765,20 @@ if [[ -n "$PASSPHRASE" ]]; then
         cat << EOF >> $CONFDIR/hostapd.conf
 wpa=2
 wpa_${WPA_KEY_TYPE}=${PASSPHRASE}
-wpa_key_mgmt=WPA-PSK SAE
-wpa_pairwise=CCMP
-rsn_pairwise=CCMP
+wpa_key_mgmt=SAE WPA-PSK WPA-PSK-SHA256
+wpa_pairwise=CCMP CCMP-256
+rsn_pairwise=CCMP CCMP-256
 ieee80211w=1
+sae_require_mfp=1
 EOF
     else
         # Original configuration for WPA_VERSION other than 3
         cat << EOF >> $CONFDIR/hostapd.conf
 wpa=${WPA_VERSION}
 wpa_${WPA_KEY_TYPE}=${PASSPHRASE}
-wpa_key_mgmt=WPA-PSK
-wpa_pairwise=CCMP
-rsn_pairwise=CCMP
+wpa_key_mgmt=SAE WPA-PSK WPA-PSK-SHA256
+wpa_pairwise=CCMP CCMP-256
+rsn_pairwise=CCMP CCMP-256
 EOF
     fi
 fi
