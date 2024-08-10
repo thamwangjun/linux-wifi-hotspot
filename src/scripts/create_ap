@@ -1717,6 +1717,10 @@ if [[ $IEEE80211N -eq 1 ]]; then
     cat << EOF >> $CONFDIR/hostapd.conf
 ieee80211n=1
 ht_capab=${HT_CAPAB}
+# Channel width (0 = 40 MHz. 1 = 80 Mhz)
+he_oper_chwidth=1
+# HE center channel (chan + 6)
+he_oper_centr_freq_seg0_idx=42
 EOF
 fi
 
@@ -1729,7 +1733,13 @@ if [[ $IEEE80211AX -eq 1 ]]; then
 fi
 
 if [[ -n "$VHT_CAPAB" ]]; then
-    echo "vht_capab=${VHT_CAPAB}" >> $CONFDIR/hostapd.conf
+    cat << EOF >> $CONFDIR/hostapd.conf
+vht_capab=${VHT_CAPAB}
+# Channel width (0 = 40 MHz. 1 = 80 Mhz)
+vht_oper_chwidth=1
+# VHT center channel (chan + 6)
+vht_oper_centr_freq_seg0_idx=42
+EOF
 fi
 
 if [[ $IEEE80211N -eq 1 ]] || [[ $IEEE80211AC -eq 1 ]]; then
